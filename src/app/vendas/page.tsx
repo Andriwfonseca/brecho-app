@@ -23,6 +23,8 @@ import {
 import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
+import React from "react";
 
 interface Peca {
   id: string;
@@ -181,65 +183,81 @@ export default function VendasPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               {itens.map((item, idx) => (
-                <div key={idx} className="flex gap-2 items-end">
-                  <div className="flex-1">
-                    <Label>Peça</Label>
-                    <Select
-                      value={item.pecaId}
-                      required
-                      onValueChange={(v) => handleItemChange(idx, "pecaId", v)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione a peça" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {pecas
-                          .filter(
-                            (p) => p.quantidade > 0 || p.id === item.pecaId
-                          )
-                          .filter(
-                            (p) =>
-                              !itens.some(
-                                (i, iidx) => i.pecaId === p.id && iidx !== idx
-                              )
-                          )
-                          .map((peca) => (
-                            <SelectItem
-                              key={peca.id}
-                              value={peca.id}
-                              disabled={peca.quantidade === 0}
-                            >
-                              {peca.nome} (R$ {peca.valor.toFixed(2)})
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
+                <React.Fragment key={idx}>
+                  {idx > 0 && <Separator className="my-2" />}
+                  <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-end">
+                    <div className="flex-1 min-w-0">
+                      <Label>Peça</Label>
+                      <Select
+                        value={item.pecaId}
+                        required
+                        onValueChange={(v) =>
+                          handleItemChange(idx, "pecaId", v)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a peça" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {pecas
+                            .filter(
+                              (p) => p.quantidade > 0 || p.id === item.pecaId
+                            )
+                            .filter(
+                              (p) =>
+                                !itens.some(
+                                  (i, iidx) => i.pecaId === p.id && iidx !== idx
+                                )
+                            )
+                            .map((peca) => (
+                              <SelectItem
+                                key={peca.id}
+                                value={peca.id}
+                                disabled={peca.quantidade === 0}
+                              >
+                                <span
+                                  className="block max-w-[160px] truncate"
+                                  title={peca.nome}
+                                >
+                                  {peca.nome}
+                                </span>{" "}
+                                (R$ {peca.valor.toFixed(2)})
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      <div className="flex-1">
+                        <Label>Qtd</Label>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={
+                            pecas.find((p) => p.id === item.pecaId)
+                              ?.quantidade ?? 1
+                          }
+                          value={item.quantidade}
+                          required
+                          onChange={(e) =>
+                            handleItemChange(idx, "quantidade", e.target.value)
+                          }
+                          disabled={!item.pecaId}
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => handleRemoveItem(idx)}
+                          disabled={creating}
+                        >
+                          Remover
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <Label>Qtd</Label>
-                    <Input
-                      type="number"
-                      min={1}
-                      max={
-                        pecas.find((p) => p.id === item.pecaId)?.quantidade ?? 1
-                      }
-                      value={item.quantidade}
-                      required
-                      onChange={(e) =>
-                        handleItemChange(idx, "quantidade", e.target.value)
-                      }
-                      disabled={!item.pecaId}
-                    />
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => handleRemoveItem(idx)}
-                    disabled={creating}
-                  >
-                    Remover
-                  </Button>
-                </div>
+                </React.Fragment>
               ))}
               <Button
                 type="button"
@@ -284,49 +302,52 @@ export default function VendasPage() {
         Vendas Realizadas
       </h2>
       <div className="space-y-4">
-        {vendas.map((venda) => (
-          <Card key={venda.id} className="shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex justify-between items-center mb-2">
-                <div>
-                  <span className="font-medium">
-                    {new Date(venda.createdAt).toLocaleString()}
-                  </span>{" "}
-                  — {venda.metodoPagamento}
+        {vendas.map((venda, idx) => (
+          <React.Fragment key={venda.id}>
+            <Card className="shadow-sm">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <div>
+                    <span className="font-medium">
+                      {new Date(venda.createdAt).toLocaleString()}
+                    </span>{" "}
+                    — {venda.metodoPagamento}
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDeleteClick(venda)}
+                    disabled={deleting === venda.id}
+                  >
+                    {deleting === venda.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}{" "}
+                    {deleting === venda.id ? "Excluindo..." : "Excluir"}
+                  </Button>
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDeleteClick(venda)}
-                  disabled={deleting === venda.id}
-                >
-                  {deleting === venda.id ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}{" "}
-                  {deleting === venda.id ? "Excluindo..." : "Excluir"}
-                </Button>
-              </div>
-              <ul className="text-sm mb-2">
-                {venda.itens.map((item) => (
-                  <li key={item.id}>
-                    {item.peca.nome} — Qtd: {item.quantidade} — R${" "}
-                    {(item.peca.valor * item.quantidade).toFixed(2)}
-                  </li>
-                ))}
-              </ul>
-              <div className="font-semibold text-rose-700">
-                Total: R${" "}
-                {venda.itens
-                  .reduce(
-                    (acc, item) => acc + item.peca.valor * item.quantidade,
-                    0
-                  )
-                  .toFixed(2)}
-              </div>
-            </CardContent>
-          </Card>
+                <ul className="text-sm mb-2">
+                  {venda.itens.map((item) => (
+                    <li key={item.id}>
+                      {item.peca.nome} — Qtd: {item.quantidade} — R${" "}
+                      {(item.peca.valor * item.quantidade).toFixed(2)}
+                    </li>
+                  ))}
+                </ul>
+                <div className="font-semibold text-rose-700">
+                  Total: R${" "}
+                  {venda.itens
+                    .reduce(
+                      (acc, item) => acc + item.peca.valor * item.quantidade,
+                      0
+                    )
+                    .toFixed(2)}
+                </div>
+              </CardContent>
+            </Card>
+            {idx < vendas.length - 1 && <Separator className="my-2" />}
+          </React.Fragment>
         ))}
       </div>
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
