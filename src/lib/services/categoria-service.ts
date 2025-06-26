@@ -1,7 +1,10 @@
 import { db } from "@/lib/prisma";
 
-export async function listarCategorias() {
+export async function listarCategorias(brechoId: string) {
   return db.categoria.findMany({
+    where: {
+      brechoId: brechoId,
+    },
     orderBy: { createdAt: "desc" },
   });
 }

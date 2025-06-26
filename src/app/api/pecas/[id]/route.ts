@@ -8,10 +8,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const brechoId = await getBrechoIdFromCookie();
+    const params = await context.params;
 
     if (!brechoId) {
       return NextResponse.json(
@@ -30,6 +31,7 @@ export async function GET(
     }
 
     return NextResponse.json(peca);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return NextResponse.json({ error: "Erro ao buscar peça" }, { status: 500 });
   }
@@ -37,10 +39,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const brechoId = await getBrechoIdFromCookie();
+    const params = await context.params;
 
     if (!brechoId) {
       return NextResponse.json(
@@ -80,10 +83,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const brechoId = await getBrechoIdFromCookie();
+    const params = await context.params;
 
     if (!brechoId) {
       return NextResponse.json(

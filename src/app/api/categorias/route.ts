@@ -13,7 +13,7 @@ export async function GET() {
       );
     }
 
-    const categorias = await listarCategorias();
+    const categorias = await listarCategorias(brechoId);
     return NextResponse.json(categorias);
   } catch {
     return NextResponse.json(

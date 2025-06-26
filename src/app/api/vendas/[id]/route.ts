@@ -4,10 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const brechoId = await getBrechoIdFromCookie();
+    const params = await context.params;
+
     if (!brechoId)
       return NextResponse.json(
         { error: "Usuário não autenticado" },
@@ -30,10 +32,12 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const brechoId = await getBrechoIdFromCookie();
+    const params = await context.params;
+
     if (!brechoId)
       return NextResponse.json(
         { error: "Usuário não autenticado" },
