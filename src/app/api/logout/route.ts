@@ -1,8 +1,14 @@
+// app/api/logout/route.ts
 import { NextResponse } from "next/server";
 import { serialize } from "cookie";
 
 export async function POST() {
-  const response = NextResponse.json({ sucesso: true });
+  const response = NextResponse.redirect(
+    new URL(
+      "/login",
+      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+    )
+  );
 
   response.headers.set(
     "Set-Cookie",
@@ -10,6 +16,8 @@ export async function POST() {
       httpOnly: false,
       path: "/",
       expires: new Date(0),
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
     })
   );
 
