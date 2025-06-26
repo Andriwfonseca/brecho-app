@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -91,7 +92,14 @@ export default function LoginPage() {
               className="w-full bg-rose-600 hover:bg-rose-700"
               disabled={loading}
             >
-              {loading ? "Entrando..." : "Entrar"}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Entrando...
+                </>
+              ) : (
+                "Entrar"
+              )}
             </Button>
           </form>
         </CardContent>

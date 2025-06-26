@@ -135,11 +135,12 @@ export default function PecasPageContent() {
 
   if (loading) {
     return (
-      <Suspense fallback={<div>Carregando categorias...</div>}>
-        <div className="max-w-2xl mx-auto py-10 px-4">
-          <div className="text-center">Carregando categorias...</div>
+      <div className="max-w-2xl mx-auto py-10 px-4">
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-rose-600" />
+          <span className="ml-2 text-lg">Carregando categorias...</span>
         </div>
-      </Suspense>
+      </div>
     );
   }
 

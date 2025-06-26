@@ -283,7 +283,10 @@ export default function PecasPageContent() {
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto py-10 px-4">
-        <div className="text-center">Carregando peças...</div>
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-rose-600" />
+          <span className="ml-2 text-lg">Carregando peças...</span>
+        </div>
       </div>
     );
   }
@@ -644,20 +647,14 @@ export default function PecasPageContent() {
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsEditDialogOpen(false)}
-                disabled={updating}
-              >
-                Cancelar
+            <div className="md:col-span-1 flex items-end">
+              <Button type="submit" disabled={updating} className="w-full">
+                {updating ? (
+                  <Loader2 className="animate-spin w-4 h-4 mr-2" />
+                ) : null}
+                {updating ? "Salvando..." : "Salvar"}
               </Button>
-              <Button type="submit" disabled={updating}>
-                {updating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {updating ? "Atualizando..." : "Atualizar"}
-              </Button>
-            </DialogFooter>
+            </div>
           </form>
         </DialogContent>
       </Dialog>

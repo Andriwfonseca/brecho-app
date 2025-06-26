@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const cadastroSchema = z.object({
   nome: z.string().min(2, "Informe o nome do brechó"),
@@ -101,7 +102,14 @@ export default function CadastroPage() {
               className="w-full bg-rose-600 hover:bg-rose-700"
               disabled={loading}
             >
-              {loading ? "Criando..." : "Criar Conta"}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Criando...
+                </>
+              ) : (
+                "Criar Conta"
+              )}
             </Button>
           </form>
         </CardContent>

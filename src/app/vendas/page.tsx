@@ -155,8 +155,11 @@ export default function VendasPage() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto py-10 px-4 text-center">
-        Carregando vendas...
+      <div className="max-w-4xl mx-auto py-10 px-4">
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-rose-600" />
+          <span className="ml-2 text-lg">Carregando vendas...</span>
+        </div>
       </div>
     );
   }
