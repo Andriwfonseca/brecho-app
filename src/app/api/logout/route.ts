@@ -1,8 +1,11 @@
-// app/api/logout/route.ts
 import { NextResponse } from "next/server";
 import { serialize } from "cookie";
 
-export async function POST() {
+export async function GET() {
+  console.log(
+    process.env.NEXT_PUBLIC_BASE_URL,
+    "process.env.NEXT_PUBLIC_BASE_URL"
+  );
   const response = NextResponse.redirect(
     new URL("/login", process.env.NEXT_PUBLIC_BASE_URL)
   );

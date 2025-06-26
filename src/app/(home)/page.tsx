@@ -51,7 +51,7 @@ export default async function HomePage() {
               Vendas
             </Button>
           </Link>
-          <form action="/api/logout" method="POST" className="mt-4">
+          <form action="/api/logout" method="GET" className="mt-4">
             <Button type="submit" variant="destructive" className="w-48">
               Sair
             </Button>
