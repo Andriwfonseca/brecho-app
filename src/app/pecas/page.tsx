@@ -38,6 +38,7 @@ interface Peca {
   tamanho: "ADULTO" | "INFANTIL";
   valor: number;
   quantidade: number;
+  createdAt: string;
   categoria: {
     id: string;
     nome: string;
@@ -63,6 +64,14 @@ export default function PecasPage() {
     string | null
   >(null);
   const [editValorInput, setEditValorInput] = useState<string>("");
+  const [filtroEstoque, setFiltroEstoque] = useState<
+    "ALL" | "EM_ESTOQUE" | "ESGOTADO"
+  >("ALL");
+  const [filtroCategoria, setFiltroCategoria] = useState<string>("ALL");
+  const [filtroGenero, setFiltroGenero] = useState<string>("ALL");
+  const [filtroTamanho, setFiltroTamanho] = useState<string>("ALL");
+  const [ordenacao, setOrdenacao] = useState<"RECENTE" | "ANTIGO">("RECENTE");
+  const [buscaNome, setBuscaNome] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -243,6 +252,34 @@ export default function PecasPage() {
     }
   };
 
+  const pecasFiltradas = pecas
+    .filter((peca) =>
+      filtroEstoque === "EM_ESTOQUE"
+        ? peca.quantidade > 0
+        : filtroEstoque === "ESGOTADO"
+        ? peca.quantidade === 0
+        : true
+    )
+    .filter((peca) =>
+      filtroCategoria !== "ALL" ? peca.categoria.id === filtroCategoria : true
+    )
+    .filter((peca) =>
+      filtroGenero !== "ALL" ? peca.genero === filtroGenero : true
+    )
+    .filter((peca) =>
+      filtroTamanho !== "ALL" ? peca.tamanho === filtroTamanho : true
+    )
+    .filter((peca) =>
+      buscaNome.trim()
+        ? peca.nome.toLowerCase().includes(buscaNome.trim().toLowerCase())
+        : true
+    )
+    .sort((a, b) =>
+      ordenacao === "RECENTE"
+        ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto py-10 px-4">
@@ -363,8 +400,96 @@ export default function PecasPage() {
         Peças Cadastradas
       </h2>
 
+      <div className="flex flex-wrap gap-4 mb-6 items-end bg-white border rounded-lg shadow p-4">
+        <div>
+          <Label>Ordenar por</Label>
+          <Select
+            value={ordenacao}
+            onValueChange={(v) => setOrdenacao(v as "RECENTE" | "ANTIGO")}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="RECENTE">Mais recente</SelectItem>
+              <SelectItem value="ANTIGO">Mais antigo</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Estoque</Label>
+          <Select
+            value={filtroEstoque}
+            onValueChange={(v) =>
+              setFiltroEstoque(v as "ALL" | "EM_ESTOQUE" | "ESGOTADO")
+            }
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todos</SelectItem>
+              <SelectItem value="EM_ESTOQUE">Apenas em estoque</SelectItem>
+              <SelectItem value="ESGOTADO">Esgotado</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Categoria</Label>
+          <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
+            <SelectTrigger>
+              <SelectValue placeholder="Todas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todas</SelectItem>
+              {categorias.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>
+                  {cat.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Gênero</Label>
+          <Select value={filtroGenero} onValueChange={setFiltroGenero}>
+            <SelectTrigger>
+              <SelectValue placeholder="Todos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todos</SelectItem>
+              <SelectItem value="FEMININO">Feminino</SelectItem>
+              <SelectItem value="MASCULINO">Masculino</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Tamanho</Label>
+          <Select value={filtroTamanho} onValueChange={setFiltroTamanho}>
+            <SelectTrigger>
+              <SelectValue placeholder="Todos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todos</SelectItem>
+              <SelectItem value="ADULTO">Adulto</SelectItem>
+              <SelectItem value="INFANTIL">Infantil</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Buscar por nome</Label>
+          <Input
+            type="text"
+            placeholder="Digite o nome da peça"
+            value={buscaNome}
+            onChange={(e) => setBuscaNome(e.target.value)}
+            className="min-w-[180px]"
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {pecas.map((peca) => (
+        {pecasFiltradas.map((peca) => (
           <Card key={peca.id} className="shadow-sm">
             <CardContent className="p-4">
               <div className="flex justify-between items-start mb-2">

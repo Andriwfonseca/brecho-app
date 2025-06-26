@@ -261,7 +261,8 @@ export default function VendasPage() {
                 <SelectContent>
                   <SelectItem value="DINHEIRO">Dinheiro</SelectItem>
                   <SelectItem value="PIX">Pix</SelectItem>
-                  <SelectItem value="CARTAO">Cartão</SelectItem>
+                  <SelectItem value="CREDITO">Crédito</SelectItem>
+                  <SelectItem value="DEBITO">Débito</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -301,7 +302,7 @@ export default function VendasPage() {
                   ) : (
                     <Trash2 className="h-4 w-4" />
                   )}{" "}
-                  Excluir
+                  {deleting === venda.id ? "Excluindo..." : "Excluir"}
                 </Button>
               </div>
               <ul className="text-sm mb-2">
@@ -350,7 +351,7 @@ export default function VendasPage() {
               {deleting === vendaToDelete?.id && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}{" "}
-              Excluir
+              {deleting === vendaToDelete?.id ? "Excluindo..." : "Excluir"}
             </Button>
           </DialogFooter>
         </DialogContent>
