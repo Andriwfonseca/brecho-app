@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -102,6 +103,16 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
+          <div className="mt-6 text-center">
+            <Button
+              variant="outline"
+              className="w-full mt-2"
+              type="button"
+              asChild
+            >
+              <Link href="/cadastro">Não tem conta? Cadastre-se</Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

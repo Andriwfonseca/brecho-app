@@ -4,10 +4,7 @@ import { serialize } from "cookie";
 
 export async function POST() {
   const response = NextResponse.redirect(
-    new URL(
-      "/login",
-      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-    )
+    new URL("/login", process.env.NEXT_PUBLIC_BASE_URL)
   );
 
   response.headers.set(

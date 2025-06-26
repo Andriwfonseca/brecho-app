@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 const cadastroSchema = z.object({
   nome: z.string().min(2, "Informe o nome do brechó"),
@@ -112,6 +113,16 @@ export default function CadastroPage() {
               )}
             </Button>
           </form>
+          <div className="mt-6 text-center">
+            <Button
+              variant="outline"
+              className="w-full mt-2"
+              type="button"
+              asChild
+            >
+              <Link href="/login">Já tem conta? Fazer login</Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
