@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Brecho {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  senhaHash String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categorias Categoria[]
+  pecas      Peca[]
+  vendas     Venda[]
+}
+
+model Categoria {
+  id        String   @id @default(cuid())
+  nome      String
+  valor     Float
+  createdAt DateTime @default(now())
+
+  brechoId String
+  brecho   Brecho @relation(fields: [brechoId], references: [id])
+
+  pecas Peca[]
+}
+
+model Peca {
+  id         String   @id @default(cuid())
+  nome       String
+  genero     String
+  tamanho    Tamanho
+  valor      Float
+  quantidade Int
+  createdAt  DateTime @default(now())
+
+  categoriaId String
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+
+  brechoId String
+  brecho   Brecho @relation(fields: [brechoId], references: [id])
+
+  itensVenda ItemVenda[]
+}
+
+model Venda {
+  id              String   @id @default(cuid())
+  metodoPagamento String
+  createdAt       DateTime @default(now())
+
+  brechoId String
+  brecho   Brecho @relation(fields: [brechoId], references: [id])
+
+  itens ItemVenda[]
+}
+
+model ItemVenda {
+  id         String @id @default(cuid())
+  pecaId     String
+  vendaId    String
+  quantidade Int
+
+  peca  Peca  @relation(fields: [pecaId], references: [id])
+  venda Venda @relation(fields: [vendaId], references: [id])
+}
+
+enum Tamanho {
+  ADULTO
+  INFANTIL
+}
