@@ -1,3 +1,5 @@
+"use server";
+
 import { db } from "@/lib/prisma";
 import { Tamanho } from "../../generated/prisma";
 
