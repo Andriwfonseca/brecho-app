@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { criarCategoriaAction } from "./action";
 import { Input } from "@/components/ui/input";
@@ -145,116 +145,111 @@ export default function PecasPageContent() {
   }
 
   return (
-    <Suspense fallback={<div>Carregando categorias...</div>}>
-      <div className="max-w-2xl mx-auto py-10 px-4">
-        <div className="mb-6">
-          <Link href="/">
-            <Button variant="outline" className="mb-4">
-              ← Voltar para Home
-            </Button>
-          </Link>
-        </div>
+    <div className="max-w-2xl mx-auto py-10 px-4">
+      <div className="mb-6">
+        <Link href="/">
+          <Button variant="outline" className="mb-4">
+            ← Voltar para Home
+          </Button>
+        </Link>
+      </div>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Nova Categoria</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form action={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="nome">Nome</Label>
-                <Input id="nome" name="nome" required disabled={creating} />
-              </div>
-              <div>
-                <Label htmlFor="valor">Valor base (R$)</Label>
-                <Input
-                  id="valor"
-                  name="valor"
-                  type="number"
-                  step="0.01"
-                  required
-                  disabled={creating}
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-rose-600 hover:bg-rose-700"
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Nova Categoria</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form action={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="nome">Nome</Label>
+              <Input id="nome" name="nome" required disabled={creating} />
+            </div>
+            <div>
+              <Label htmlFor="valor">Valor base (R$)</Label>
+              <Input
+                id="valor"
+                name="valor"
+                type="number"
+                step="0.01"
+                required
                 disabled={creating}
-              >
-                {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {creating ? "Cadastrando..." : "Cadastrar"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        <h2 className="text-xl font-semibold mb-4 text-rose-700">
-          Categorias Cadastradas
-        </h2>
-
-        <ul className="space-y-3">
-          {categorias.map((categoria) => (
-            <li
-              key={categoria.id}
-              className="border rounded-md p-4 shadow-sm bg-white"
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-rose-600 hover:bg-rose-700"
+              disabled={creating}
             >
-              <div className="flex justify-between items-center">
-                <div className="flex-1">
-                  <span className="font-medium">{categoria.nome}</span>
-                  <span className="text-muted-foreground ml-4">
-                    R$ {Number(categoria.valor).toFixed(2)}
-                  </span>
-                </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDeleteClick(categoria)}
-                  disabled={deleting === categoria.id}
-                >
-                  {deleting === categoria.id && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  {deleting === categoria.id ? "Deletando..." : "Deletar"}
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
+              {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {creating ? "Cadastrando..." : "Cadastrar"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Confirmar exclusão</DialogTitle>
-              <DialogDescription>
-                Tem certeza que deseja deletar a categoria &quot;
-                {categoriaToDelete?.nome}&quot;? Esta ação não pode ser
-                desfeita.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsDeleteDialogOpen(false)}
-                disabled={deleting === categoriaToDelete?.id}
-              >
-                Cancelar
-              </Button>
+      <h2 className="text-xl font-semibold mb-4 text-rose-700">
+        Categorias Cadastradas
+      </h2>
+
+      <ul className="space-y-3">
+        {categorias.map((categoria) => (
+          <li
+            key={categoria.id}
+            className="border rounded-md p-4 shadow-sm bg-white"
+          >
+            <div className="flex justify-between items-center">
+              <div className="flex-1">
+                <span className="font-medium">{categoria.nome}</span>
+                <span className="text-muted-foreground ml-4">
+                  R$ {Number(categoria.valor).toFixed(2)}
+                </span>
+              </div>
               <Button
                 variant="destructive"
-                onClick={handleDeleteConfirm}
-                disabled={deleting === categoriaToDelete?.id}
+                size="sm"
+                onClick={() => handleDeleteClick(categoria)}
+                disabled={deleting === categoria.id}
               >
-                {deleting === categoriaToDelete?.id && (
+                {deleting === categoria.id && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                {deleting === categoriaToDelete?.id
-                  ? "Deletando..."
-                  : "Deletar"}
+                {deleting === categoria.id ? "Deletando..." : "Deletar"}
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </Suspense>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar exclusão</DialogTitle>
+            <DialogDescription>
+              Tem certeza que deseja deletar a categoria &quot;
+              {categoriaToDelete?.nome}&quot;? Esta ação não pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={deleting === categoriaToDelete?.id}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={deleting === categoriaToDelete?.id}
+            >
+              {deleting === categoriaToDelete?.id && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              {deleting === categoriaToDelete?.id ? "Deletando..." : "Deletar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
