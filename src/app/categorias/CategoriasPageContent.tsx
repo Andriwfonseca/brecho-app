@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { criarCategoriaAction } from "./action";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -83,15 +82,26 @@ export default function PecasPageContent() {
   const handleSubmit = async (formData: FormData) => {
     setCreating(true);
     try {
-      await criarCategoriaAction(formData);
+      const nome = formData.get("nome");
+      const valor = formData.get("valor");
+
+      const response = await fetch("/api/categorias", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, valor }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erro ao cadastrar categoria");
+      }
+
       toast.success("Categoria cadastrada com sucesso!");
-      // Recarrega as categorias
       await carregarCategorias();
-      // Limpa o formulário
       const form = document.querySelector("form") as HTMLFormElement;
       if (form) form.reset();
     } catch (error) {
-      // Captura a mensagem específica do erro
       const errorMessage =
         error instanceof Error ? error.message : "Erro ao cadastrar categoria";
       toast.error(errorMessage);
@@ -117,11 +127,12 @@ export default function PecasPageContent() {
         }
       );
 
+      const data = await response.json();
+
       if (response.ok) {
         toast.success("Categoria deletada com sucesso!");
         await carregarCategorias();
       } else {
-        const data = await response.json();
         toast.error(data.error || "Erro ao deletar categoria");
       }
     } catch {
